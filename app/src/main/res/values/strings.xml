@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">EngApp</string>
+    <string name="btn_entrar">ENTRAR</string>
+    <string name="btnBack">Voltar</string>
+    <string name="btnNext">Passar</string>
+    <string name="strLogin">LOGIN</string>
+    <string name="hintEmail">Email</string>
+    <string name="hintSenha">Senha</string>
+    <string name="btn_cadastro">Realizar cadastro</string>
+</resources>
