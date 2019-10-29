@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +39,7 @@
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,37 +48,41 @@
 
         </androidx.viewpager.widget.ViewPager>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <Button
-                android:id="@+id/btnBack"
-                android:layout_width="209dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:paddingLeft="10dp"
-                android:text="@string/btnBack"
-                android:textAlignment="textStart"
-                android:textColor="@android:color/background_light" />
-
-            <Button
                 android:id="@+id/btnNext"
-                android:layout_width="200dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:paddingRight="10dp"
                 android:text="@string/btnNext"
                 android:textAlignment="textEnd"
-                android:textColor="@android:color/background_light" />
+                android:textColor="@android:color/background_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnBack"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:paddingLeft="10dp"
+                android:text="@string/btnBack"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/background_light"
+                app:layout_constraintEnd_toStartOf="@+id/btnNext"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
