@@ -1,11 +1,6 @@
 package com.e.engapp.model;
 
-import android.util.Log;
-
-import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DatabaseReference;
-
-import java.util.List;
 
 public class UsuarioDAO implements DatabaseInterface<Usuario> {
     private DatabaseReference reference;
@@ -15,28 +10,30 @@ public class UsuarioDAO implements DatabaseInterface<Usuario> {
     }
 
     @Override
-    public List<Usuario> list() {
-        return null;
-    }
-
-    @Override
-    public Usuario get(Object object) {
+    public Usuario get(final Usuario usuario) {
         return null;
     }
 
     @Override
     public boolean save(Usuario usuario) {
         try {
-            reference.child( usuario.getID() ).setValue( usuario );
+            DatabaseReference node = reference.child( usuario.getId() );
+            node.setValue( usuario );
             return true;
-        } catch (Exception fe) {
-            Log.e("Erro method SAVE in UsuarioDAO",fe.getMessage());
+        } catch (Exception fex) {
+            fex.getStackTrace();
             return false;
         }
     }
 
     @Override
-    public Usuario update(Usuario object, Object param) {
-        return null;
+    public boolean update(Usuario usuario) {
+        try {
+            reference.child( usuario.getId() ).setValue( usuario );
+            return true;
+        } catch (Exception fex) {
+            fex.getStackTrace();
+            return false;
+        }
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EngApp</string>
+    <string name="app_name">Paper Recycler</string>
     <string name="btn_entrar">ENTRAR</string>
     <string name="btnBack">Voltar</string>
     <string name="btnNext">Passar</string>
@@ -7,4 +7,15 @@
     <string name="hintEmail">Email</string>
     <string name="hintSenha">Senha</string>
     <string name="btn_cadastro">Realizar cadastro</string>
+    <string name="cadastro_label">CADASTRO</string>
+    <string name="txtNome">Nome</string>
+    <string name="btn_sou_cadastrado">JÁ SOU CADASTRADO</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="btn_cadastrar">CADASTRAR</string>
+    <string name="encheu_label">Encheu!</string>
+    <string name="bloco_label">Bloco</string>
+    <string name="label_setor">Setor</string>
 </resources>

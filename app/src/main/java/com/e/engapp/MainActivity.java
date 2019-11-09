@@ -4,11 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.viewpager.widget.ViewPager;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.e.engapp.model.FirebaseConnection;
 import com.e.engapp.model.Slider;
 import com.e.engapp.model.SliderAdapter;
+import com.e.engapp.model.Usuario;
+import com.e.engapp.model.UsuarioDAO;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class MainActivity extends Activity {
     private ViewPager viewPager;
