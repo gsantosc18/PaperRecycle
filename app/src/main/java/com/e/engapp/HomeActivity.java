@@ -14,11 +14,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.e.engapp.model.Bloco;
+import com.e.engapp.model.EmailSend;
 import com.e.engapp.model.FirebaseConnection;
 import com.e.engapp.model.Setor;
+import com.e.engapp.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -28,7 +32,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static String CORINGA = "NENHUM";
+    private static String CORINGA = "Selecionar";
 
     private FirebaseConnection firebaseConnection;
     private List<String> blocos, setores;
@@ -36,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayAdapter blocoAdapter, setorAdapter;
 
     private Spinner blocoSelect, setorSelect;
-    private Button btnEnvia;
+    private Button btnEncheu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +49,13 @@ public class HomeActivity extends AppCompatActivity {
 
         // Configuracoes do Barra de Acao do topo
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher);
+        actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowTitleEnabled(true);
 
-        // Recupera os spinner de selecao da tela
+        // Recupera os elementos da tela
         blocoSelect = (Spinner) findViewById( R.id.blocoSelect );
         setorSelect = (Spinner) findViewById( R.id.setorSelect );
+        btnEncheu = (Button) findViewById( R.id.btnEncheu );
 
         // Inicia a conexao com o banco de dados
         firebaseConnection = new FirebaseConnection();
@@ -75,7 +79,10 @@ public class HomeActivity extends AppCompatActivity {
 
         firebaseConnection.get().child( "bloco" ).addValueEventListener( getBlocos( ) );
 
+        // Evento ativado quando selecionar um item
         blocoSelect.setOnItemSelectedListener( onSelectedItem() );
+
+        btnEncheu.setOnClickListener( pressBtnEncheu() );
     }
 
     @Override
@@ -102,6 +109,7 @@ public class HomeActivity extends AppCompatActivity {
         return new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                blocoData.clear();
                 for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
                     Bloco bloco = dataSnapshot1.getValue( Bloco.class );
                     blocos.add( bloco.getNome() );
@@ -118,18 +126,26 @@ public class HomeActivity extends AppCompatActivity {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("Item selecionado", blocos.get( position ));
-                setores.clear();
+
+                if ( blocoData.isEmpty() ) return;
+
+                if ( position == 0 && !setores.get( 0 ).equals( CORINGA ) ) {
+                    setores.clear();
+                    setores.add( CORINGA );
+                    setorAdapter.notifyDataSetChanged();
+                    return;
+                }
+
                 firebaseConnection
                     .get()
                     .child( "setor" )
                     .orderByChild( "bloco" )
-                    .equalTo( blocoData.get( position ).getId() )
+                    .equalTo( blocoData.get( position-1 ).getId() )
                     .addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Log.e("Setores",dataSnapshot.toString());
+                                setores.clear();
                                 for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
                                     Setor setor = dataSnapshot1.getValue( Setor.class );
                                     setores.add( setor.getNome() );
@@ -137,13 +153,79 @@ public class HomeActivity extends AppCompatActivity {
                                 setorAdapter.notifyDataSetChanged();
                             }
                             @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {}
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                setores.clear();
+                                setores.add( CORINGA );
+                                setorAdapter.notifyDataSetChanged();
+                            }
                         }
                     );
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+    }
+
+    private View.OnClickListener pressBtnEncheu() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String bloco, setor;
+
+                bloco = blocoSelect.getSelectedItem().toString();
+                setor = setorSelect.getSelectedItem().toString();
+
+                if ( bloco.equalsIgnoreCase( CORINGA ) || setor.equalsIgnoreCase( CORINGA ) ) {
+                    Toast.makeText(
+                            HomeActivity.this,
+                            "Selecione um bloco e um setor.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    return;
+                }
+
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                firebaseConnection.get()
+                    .child( "user" )
+                    .orderByChild( "email" )
+                    .equalTo(user.getEmail())
+                    .addListenerForSingleValueEvent( new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String nomeUsuario = user.getDisplayName(),
+                                    email = user.getEmail();
+                            for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
+                                Usuario usuario = dataSnapshot1.getValue( Usuario.class );
+                                nomeUsuario = usuario.getNome();
+                            }
+
+                            String mensagem = "@ "+nomeUsuario+"("+email+") informa que a caixa do "+bloco+" e do " +
+                                    "setor "+ setor+", encheu!";
+
+                            EmailSend emailSend = new EmailSend(
+                                    "aidaalmeidasc@gmail.com",
+                                    "A caixa encheu! "+bloco+" ("+setor+")",
+                                    mensagem
+                            );
+
+                            emailSend.execute();
+
+                            Toast.makeText(
+                                    HomeActivity.this,
+                                    "Obrigado! Sua atitude nos ajuda a criar uma UNIFAMAZ mais sustentável",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    } );
+            }
         };
     }
 }

@@ -16,10 +16,21 @@ public class Slider {
     };
 
     String texts[] = new String[] {
-            "Conteúdo 1 de 4",
-            "Conteúdo 2 de 4",
-            "Conteúdo 3 de 4",
-            "Conteúdo 4 de 4"
+            "O Projeto Visa a coleta de papel de cada setor da instituição com o intuito de " +
+                    "promover a conscientização da comunidade acadêmica, ensinando a educação " +
+                    "ambiental e a reciclagem do papel na instituição.",
+            "O NEA (Núcleo de Estudos Ambientais) é um programa de ações de gerenciamento de " +
+                    "resídos criado em junho de 2017, com intituito de conscientizar a comunidade " +
+                    "acadêmica, além de coletar papel e destinar para empresas de reutilização e " +
+                    "reciclagem.",
+            "Alunos: \n" +
+                    "Aida Serrão,\n" +
+                    "Carlos Hideo Kajitani,\n" +
+                    "Luane Nascimento\n" +
+            "Professora: \n" +
+                    "Msc. Elane Lemos",
+            "Estudantes do curso de Bacharelado em Engenharia Ambiental e Sanitária e integrantes" +
+                    " do NEA."
     };
 
     String titles[] = new String[] {
