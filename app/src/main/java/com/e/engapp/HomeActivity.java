@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.e.engapp.model.Bloco;
 import com.e.engapp.model.EmailSend;
 import com.e.engapp.model.FirebaseConnection;
+import com.e.engapp.model.Notification;
 import com.e.engapp.model.Setor;
 import com.e.engapp.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
@@ -213,11 +214,12 @@ public class HomeActivity extends AppCompatActivity {
 
                             emailSend.execute();
 
-                            Toast.makeText(
+                            Notification.make(
                                     HomeActivity.this,
-                                    "Obrigado! Sua atitude nos ajuda a criar uma UNIFAMAZ mais sustentável",
-                                    Toast.LENGTH_LONG
-                            ).show();
+                                    "Obrigado!",
+                                    "Sua atitude nos ajuda a criar uma UNIFAMAZ mais sustentável",
+                                    Notification.SUCCESS
+                                );
                         }
 
                         @Override
