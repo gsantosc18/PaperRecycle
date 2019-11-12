@@ -1,6 +1,7 @@
 package com.e.engapp.model;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.Properties;
 
@@ -57,6 +58,7 @@ public class EmailSend extends AsyncTask<Void,Void,Void> {
 
         } catch (MessagingException e) {
             e.printStackTrace();
+            Log.e("Erro no email", e.getMessage());
         }
 
         return null;
