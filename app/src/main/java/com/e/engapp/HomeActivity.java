@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.icu.util.GregorianCalendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,11 +18,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.e.engapp.model.Bloco;
+import com.e.engapp.model.Chat;
+import com.e.engapp.model.ChatDAO;
 import com.e.engapp.model.EmailSend;
 import com.e.engapp.model.FirebaseConnection;
 import com.e.engapp.model.Notification;
 import com.e.engapp.model.Setor;
 import com.e.engapp.model.Usuario;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -203,23 +208,37 @@ public class HomeActivity extends AppCompatActivity {
                                 nomeUsuario = usuario.getNome();
                             }
 
-                            String mensagem = "@ "+nomeUsuario+"("+email+") informa que a caixa do "+bloco+" e do " +
+                            String mensagem = "@"+nomeUsuario+"("+email+") informa que a caixa do "+bloco+" e do " +
                                     "setor "+ setor+", encheu!";
 
-                            EmailSend emailSend = new EmailSend(
-                                    "aidaalmeidasc@gmail.com",
-                                    "A caixa encheu! "+bloco+" ("+setor+")",
-                                    mensagem
-                            );
+//                            EmailSend emailSend = new EmailSend(
+//                                    "aidaalmeidasc@gmail.com",
+//                                    "A caixa encheu! "+bloco+" ("+setor+")",
+//                                    mensagem
+//                            );
+//
+//                            emailSend.execute();
+                            Chat chat = new Chat();
+                            chat.setMensagem( mensagem );
+                            chat.setData( GregorianCalendar.getInstance().getTime().toString() );
+                            chat.setUser( user.getDisplayName() );
 
-                            emailSend.execute();
-
-                            Notification.make(
-                                    HomeActivity.this,
-                                    "Obrigado!",
-                                    "Sua atitude nos ajuda a criar uma UNIFAMAZ mais sustentável",
-                                    Notification.SUCCESS
+                            try{
+                                new ChatDAO( firebaseConnection ).save( chat );
+                                Notification.make(
+                                        HomeActivity.this,
+                                        "Obrigado!",
+                                        "Sua atitude nos ajuda a criar uma UNIFAMAZ mais sustentável",
+                                        Notification.SUCCESS
                                 );
+                            } catch (Exception ex) {
+                                Notification.make(
+                                        HomeActivity.this,
+                                        "Ops",
+                                        "Houve um erro o aplicativo, por favor contate o responsável.",
+                                        Notification.ERROR
+                                );
+                            }
                         }
 
                         @Override

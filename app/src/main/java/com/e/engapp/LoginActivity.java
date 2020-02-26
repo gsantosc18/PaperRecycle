@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends Activity {
     private TextView txtEmail, txtSenha;
+    private Button btnEntrar, btnIrCadastro;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -30,8 +31,8 @@ public class LoginActivity extends Activity {
             finish();
         }
 
-        Button btnIrCadastro = (Button) findViewById( R.id.btnIrCadastro );
-        Button btnEntrar = (Button) findViewById( R.id.btnEntrar );
+        btnIrCadastro = (Button) findViewById( R.id.btnIrCadastro );
+        btnEntrar = (Button) findViewById( R.id.btnEntrar );
 
         txtEmail = findViewById( R.id.txtEmail );
         txtSenha = findViewById( R.id.txtSenha );
@@ -62,10 +63,15 @@ public class LoginActivity extends Activity {
                 String email = txtEmail.getText().toString(),
                         senha = txtSenha.getText().toString();
 
+                Toast.makeText( LoginActivity.this, "Aguarde enquanto verifico suas informações", Toast.LENGTH_LONG ).show();
+                btnEntrar.setEnabled( false );
+                btnIrCadastro.setEnabled( false );
                 FirebaseConnection connection = new FirebaseConnection();
                 connection.getInstanceAuth().signInWithEmailAndPassword( email, senha ).addOnCompleteListener( LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        btnEntrar.setEnabled( true );
+                        btnIrCadastro.setEnabled( true );
                         if (!task.isSuccessful()) {
                             Toast.makeText( LoginActivity.this, "Email ou Senha inválidos.", Toast.LENGTH_LONG ).show();
                             return;
