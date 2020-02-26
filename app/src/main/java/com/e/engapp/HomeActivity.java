@@ -221,7 +221,7 @@ public class HomeActivity extends AppCompatActivity {
                             Chat chat = new Chat();
                             chat.setMensagem( mensagem );
                             chat.setData( GregorianCalendar.getInstance().getTime().toString() );
-                            chat.setUser( nomeUsuario );
+                            chat.setUser( user.getUid() );
 
                             try{
                                 new ChatDAO( firebaseConnection ).save( chat );
